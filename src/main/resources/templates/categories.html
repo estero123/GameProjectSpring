@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cats</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .navigation-order{
+            margin-bottom: 30px;
+        }
+        .results tr[visible='false'],
+        .no-result{
+            display:none;
+        }
+
+        .results tr[visible='true']{
+            display:table-row;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header">...</div>
+<div class="container">
+    <div class="page-header" id="banner">
+        <div class="row">
+
+            <div class="col-md-8">
+                <h1>Add an category</h1>
+                <form>
+                    <div class="form-group">
+                        <label for="category_name">Category Name:</label>
+                        <input type="text" class="form-control" id="category_name"/>
+
+                    </div>
+                    <button type="submit" class="btn btn-success" id="btn_submit">Add New Category</button>
+                </form>
+            </div>
+
+            <div class="col-md-4">
+                <a href="/admin/">Click here to go to Games</a>
+                <h1>Categories</h1>
+                <div class="form-group">
+                    <input type="text" class="form-control search" placeholder="Wpisz id/tytuł szukanej kategorii..." />
+                </div>
+                <table class="table table-striped table-hover results">
+                    <thead>
+                    <tr>
+                        <th>Cat Name</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}">
+                        <td th:text="${category.categoryName}"></td>
+                        <td th:id="${category.id}"><button class="btn btn-danger delete-category">Delete</button> <button class="btn btn-info update-category">Update</button></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br />
+    </div>
+</div>
+<script type="application/javascript">
+    $(document).ready(function () {
+        $('#btn_submit').on("click",function (e) {
+            e.preventDefault();
+            var categoryName;
+            categoryName = $('#category_name').val();
+            if($.trim(categoryName) === ""){
+                alert("cat name cannot be empty");
+            }
+            else {
+                var data = {};
+                data["categoryName"] = categoryName;
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/admin/savecategory",
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    timeout: 6000,
+                    success: function (data) {
+                        if (confirm("category with id " +data + " saved")){
+                            window.location.reload();
+                        }
+                    }
+                });
+            }
+        });
+
+
+        $('.update-category').on("click", function(e){
+            e.preventDefault();
+            var Id = parseInt($(this).closest("td").attr("id"));
+            $.ajax({
+                data:{Id:Id},
+                success:function (data) {
+                    window.location.href = "/admin/updatecategory/" + Id;
+                }
+            });
+        });
+
+        $('.delete-category').on("click", function(e){
+            e.preventDefault();
+
+            if(confirm("Are you sure to delete this category?")){
+                var Id = parseInt($(this).closest("td").attr("id"));
+
+                $.ajax({
+                    type:"POST",
+                    url:"/admin/removecategory",
+                    data:{Id:Id},
+                    success:function (data) {
+                        $(".delete-category").closest("td#"+data).parent("tr").fadeOut("slow",function(){
+                            $(".delete-category").closest("td#"+data).parent("tr").remove();
+                        });
+                    }
+                });
+            }
+        });
+
+
+        $(".search").keyup(function () {
+            var searchTerm = $(".search").val();
+
+
+            var listItem = $('.results tbody').children('tr');
+            var searchSplit = searchTerm.replace(/ /g, "'):containsi('");
+
+            $.extend($.expr[':'], {'containsi': function(elem, i, match, array){
+                return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+            }
+            });
+
+            $(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){
+                $(this).attr('visible','false');
+            });
+
+            $(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){
+                $(this).attr('visible','true');
+            });
+
+            var jobCount = $('.results tbody tr[visible="true"]').length;
+            $('.counter').text(jobCount + ' item');
+
+            if(jobCount == '0') {$('.no-result').show();}
+            else {$('.no-result').hide();}
+        });
+
+    });
+</script>
+<div th:replace="fragments/footer :: footer">...</div>
+</body>
+</html>

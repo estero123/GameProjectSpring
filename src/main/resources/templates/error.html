@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Coś poszło nie tak - darmowe gry online</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/square.css" media="screen"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <div th:remove="tag" th:replace="fragments/analytics :: analytics"></div>
+    <style>
+        body {
+            background-color: #121b37;
+        }
+        h1 {
+            margin-bottom: 10px;
+            color: #fdfcfd;
+            font-size: 2em;
+            text-transform: uppercase; }
+
+        h1:after {
+
+            content: '';
+            width: 90px;
+            height: 1px;
+            background: #f9a101;
+            display: block;
+            margin-top: 6px;
+        }
+        p {
+            color: #fdfcfd;
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header">...</div>
+
+<div class="container ">
+    <div class="row" >
+    <h1>Uups...</h1>
+        <p class="text-center"><span>Wystąpił nieoczekiwany błąd, przepraszamy.</span></p>
+        <a href="/" th:alt="'darmowe gry online'"><button type="button" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-chevron-left"></span> Powrót do strony głównej</button></a>
+    </div>
+
+</div>
+<div th:replace="fragments/footer :: footer">...</div>
+</body>
+</html>

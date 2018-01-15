@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default"
+      lang="pl">
+<head>
+    <title>Kontakt - free-gry.online</title>
+    <script src='https://www.google.com/recaptcha/api.js' async="async" defer="defer"></script>
+    <style>
+        body {
+            background-color: #121b37;
+        }
+        h1 {
+            margin-bottom: 10px;
+            color: #fdfcfd;
+            font-size: 2em;
+            text-transform: uppercase; }
+
+        h1:after {
+
+            content: '';
+            width: 90px;
+            height: 1px;
+            background: #f9a101;
+            display: block;
+            margin-top: 6px;
+        }
+
+        h3 {
+            margin-bottom: 10px;
+            color: #fdfcfd;
+            font-size: 1.4em;
+            text-transform: uppercase; }
+
+        h3:after {
+
+            content: '';
+            width: 70px;
+            height: 1px;
+            background: #f9a101;
+            display: block;
+            margin-top: 4px;
+        }
+
+
+        .single {
+            padding: 30px 15px;
+            margin-top: 40px;
+            background: #121a35;
+            border: 1px solid #090e1d; }
+        .single h3.side-title {
+            margin: 0;
+            margin-bottom: 10px;
+            padding: 0;
+            font-size: 20px;
+            color: #fdfcfd;
+            text-transform: uppercase; }
+        .single h3.side-title:after {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background: #f9a101;
+            display: block;
+            margin-top: 6px; }
+
+        .single ul {
+            margin-bottom: 0; }
+        .single li a {
+            color: #fdfcfd;
+            font-size: 14px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #090e1d;
+            line-height: 40px;
+            display: block;
+            text-decoration: none; }
+        .single li a:hover {
+            color: #f9a101; }
+        .single li:last-child a {
+            border-bottom: 0; }
+        span {
+            color: #fdfcfd;
+        }
+
+        .caption {
+            position:absolute;
+            top:0;
+            right:0;
+            background:rgba(9, 14, 29, 0.75);
+            width:100%;
+            height:100%;
+            padding:2%;
+            display: none;
+            text-align: left;
+            font-size: 0.85em;
+            color:#fff !important;
+            z-index:2;
+        }
+        .thumbnail {
+            position:relative;
+            overflow:hidden;
+        }
+
+
+        div.gameName{
+            position:absolute; /* absolute position (so we can position it where we want)*/
+            bottom:0px; /* position will be on bottom */
+            left:0px;
+            width:100%;
+            /* styling bellow */
+            background-color:black;
+            color:white;
+            opacity:0.7; /* transparency */
+            filter:alpha(opacity=70); /* IE transparency */
+        }
+        p.gameName_content{
+            padding:10px;
+            margin:0px;
+            font-size: 0.75em;
+        }
+
+        .gameCategory {
+            padding: 30px 15px 10px;
+            margin-top: 40px;
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: #fdfcfd;
+            text-transform: uppercase; }
+
+        .gameCategory:after {
+
+            content: '';
+            width: 90px;
+            height: 1px;
+            background: #f9a101;
+            display: block;
+            margin-top: 6px;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            opacity: 0.7;
+        }
+
+        .overlay-img {
+            position: absolute;
+            top: 15%;
+            left: 37%;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="row">
+        <section>
+            <div class="col-md-8" style="margin-top: 40px;">
+                <h1>Napisz do nas!</h1>
+
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="mail_topic"><span>Tytuł maila</span> </label>
+                        <input type="text" style="background-color: #121B37; color: whitesmoke;" class="form-control" id="mail_topic"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="mail_replyTo"><span>Twój adres mail</span> </label>
+                        <input type="text" style="background-color: #121B37; color: whitesmoke;" class="form-control" id="mail_replyTo"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="mail_text"><span>Treść wiadomości</span></label>
+                        <textarea rows="5" cols="50" style="background-color: #121B37; color: whitesmoke;" class="form-control" id="mail_text"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="g-recaptcha" data-sitekey="6LcEYDAUAAAAAB1gek7xZcGPU2EAWE_YPBGsD6Bq"></div>
+                    </div>
+                    <button type="submit" class="btn btn-warning sendmail" id="sendmail">Wyślij!</button>
+                </form>
+            </div>
+        </section>
+
+
+        <aside>
+            <div class="col-md-4">
+                <div th:replace="fragments/categoryMenu :: categoryMenu">...</div>
+            </div>
+        </aside>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.sendmail').on("click", function(e){
+                e.preventDefault();
+                var mailTopic = $("#mail_topic").val();
+                var mailReplyTo = $("#mail_replyTo").val();
+                var mailText = $("#mail_text").val();
+                var mailCaptcha = grecaptcha.getResponse();
+
+                if($.trim(mailTopic)===""){
+                    alert("Podaj temat wiadomości");
+                } else if($.trim(mailReplyTo)===""){
+                    alert("Podaj swój adres e-mail");
+                } else if($.trim(mailText)===""){
+                    alert("Podaj treść wiadomości");
+                } else if (mailCaptcha.length === 0) {
+                    alert("Sprawdź poprawność reCaptcha!")
+                } else {
+                    if(confirm("Wysłać ten mail?")){
+                        $.ajax({
+                            type:"POST",
+                            url:"/kontakt/wyslij",
+                            data:{mailTopic:mailTopic , mailText:mailText, mailReplyTo:mailReplyTo, correctCaptcha:mailCaptcha},
+                            success:function (data) {
+                                if (confirm(data)){
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

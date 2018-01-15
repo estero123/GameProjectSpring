@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default"
+      lang="pl">
+<head>
+    <title>Strona główna - darmowe gry online</title>
+    <style>
+        body {
+            background-color: #121b37;
+        }
+        .single {
+            padding: 30px 15px;
+            margin-top: 40px;
+            background: #121a35;
+            border: 1px solid #090e1d; }
+        .single h3.side-title {
+            margin: 0;
+            margin-bottom: 10px;
+            padding: 0;
+            font-size: 20px;
+            color: #fdfcfd;
+            text-transform: uppercase; }
+        .single h3.side-title:after {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background: #f9a101;
+            display: block;
+            margin-top: 6px; }
+
+        .single ul {
+            margin-bottom: 0; }
+        .single li a {
+            color: #fdfcfd;
+            font-size: 14px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #090e1d;
+            line-height: 40px;
+            display: block;
+            text-decoration: none; }
+        .single li a:hover {
+            color: #f9a101; }
+        .single li:last-child a {
+            border-bottom: 0; }
+
+
+        .caption {
+            position:absolute;
+            top:0;
+            right:0;
+            background:rgba(9, 14, 29, 0.75);
+            width:100%;
+            height:100%;
+            padding:2%;
+            display: none;
+            text-align: left;
+            font-size: 0.85em;
+            color:#fff !important;
+            z-index:2;
+        }
+        .thumbnail {
+            position:relative;
+            overflow:hidden;
+        }
+
+
+        div.gameName{
+            position:absolute; /* absolute position (so we can position it where we want)*/
+            bottom:0px; /* position will be on bottom */
+            left:0px;
+            width:100%;
+            /* styling bellow */
+            background-color:black;
+            color:white;
+            opacity:0.7; /* transparency */
+            filter:alpha(opacity=70); /* IE transparency */
+        }
+        p.gameName_content{
+            padding:10px;
+            margin:0px;
+            font-size: 0.75em;
+        }
+
+        .gameCategory {
+            padding: 30px 15px 10px;
+            margin-top: 40px;
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: #fdfcfd;
+            text-transform: uppercase; }
+
+        .gameCategory:after {
+
+            content: '';
+            width: 90px;
+            height: 1px;
+            background: #f9a101;
+            display: block;
+            margin-top: 6px;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            opacity: 0.7;
+        }
+
+        .overlay-img {
+            position: absolute;
+            top: 15%;
+            left: 37%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+        <div class="row" >
+            <aside>
+                <div class="col-md-4">
+                    <div th:replace="fragments/categoryMenu :: categoryMenu">...</div>
+                </div>
+            </aside>
+            <section>
+                <article>
+                    <div class="col-md-8">
+                        <h3 class="gameCategory" style="padding: 30px 0px 0px;">Najpopularniejsze gry</h3>
+                        <div class="row">
+                            <div class="col-xs-6 col-md-3"  th:each="game : ${gamesListMostPlayed}">
+                                <a th:href="@{/g/} + ${game.gameSlogan}"  class="thumbnail" style="background-color: #121a35; padding: 1px; box-shadow: 0px 0px 8px black;">
+                                    <div th:text="${#strings.abbreviate(game.gameDescription,80)}" class="caption"></div>
+                                    <img class="lazy" th:attr="data-src=${game.gameThumbnail}" th:alt="${game.gameName} + ' darmowe gry online - free-gry.online'" />
+                                    <div th:if="${device != 'computer'} and ${game.mobile == false}" th:remove="tag">
+                                        <div class="overlay">
+                                            <div class="overlay-img"><img class="img-responsive" src="/nomobile.png" /> </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="gameName">
+                                        <p th:text="${game.gameName}" class="gameName_content"></p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div th:each="gameMap : ${gamesByCategories}">
+
+                            <h3 class="gameCategory" style="padding: 0px 0px 0px; margin-top: 5px;">
+                                <span th:text="${gameMap.key}" th:remove="tag"></span>
+                                <a th:href="@{/gry/} + ${#strings.replace(gameMap.key,' ','-')}" th:title="'Gry ' + ${gameMap.key}" >
+                                    <button type="button" style="background-color: #121b37; margin-top: -2px;" class="btn btn-warning pull-right">
+                                        Więcej <span class="glyphicon glyphicon-play-circle" style="color: #eea236;"></span>
+                                    </button>
+                                </a>
+                            </h3>
+                            <div class="row">
+                                <div th:each="gameSet : ${gameMap.value}">
+                                    <div class="col-xs-6 col-md-3" th:each="game : ${gameSet}">
+                                        <a th:href="@{/g/} + ${game.gameSlogan}" th:title="${game.gameName}" class="thumbnail" style="box-shadow: 0px 0px 8px black; background-color: #121a35; padding: 1px;">
+                                            <div th:text="${#strings.abbreviate(game.gameDescription,80)}" class="caption"></div>
+                                            <img class="lazy" th:attr="data-src=${game.gameThumbnail}" th:alt="${game.gameName} + ' darmowe gry online - free-gry.online'" />
+                                            <div th:if="${device != 'computer'} and ${game.mobile == false}" th:remove="tag">
+                                                <div class="overlay">
+                                                    <div class="overlay-img"><img class="img-responsive" src="/nomobile.png" /> </div>
+                                                </div>
+                                            </div>
+                                            <div class="gameName">
+                                                <p th:text="${game.gameName}" class="gameName_content"></p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </section>
+    </div>
+</div>
+</body>
+</html>
