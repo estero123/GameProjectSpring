@@ -1,0 +1,50 @@
+<div th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml" >
+    <header>
+    <a href="/" title="Strona główna"><img src="/logo.png" class="img-responsive center-block" alt="free-gry.online logo"/></a>
+    </header>
+        <nav class="navbar navbar-inverse " style="background-color: #121a35; border-bottom: 2px solid #f9a101;" role="navigation">
+    <div class="container-fluid">
+        <!-- Grupowanie "marki" i przycisku rozwijania mobilnego menu -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" style="border: 1px solid #f9a101;" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Rozwiń nawigację</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <!-- Grupowanie elementów menu w celu lepszego wyświetlania na urządzeniach moblinych -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/" title="Strona główna">Strona główna</a></li>
+                <li><a href="/gry/mobilne" title="Gry mobilne">Gry mobilne</a></li>
+                <li><a href="/gry/dla-dziewczyn" title="Gry dla dziewczyn">Gry dla dziewczyn</a></li>
+                <li th:if="${userRoles != null and #strings.contains(userRoles,'[ROLE_ADMIN]')}">
+                    <a href="/admin/">Panel administracyjny</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/kontakt/">Kontakt</a></li>
+                <form class="navbar-form navbar-left" th:if="${userRoles != null and #strings.contains(userRoles,'[ROLE_ADMIN]')}" th:action="@{/logout}" method="post">
+                    <div class="input-group">
+                        <div class="input-group-btn" >
+                            <button type="submit" class="btn btn-default" style="background-color: #121b37;border: 1px solid #eea236;  color: #eea236;" >Wyloguj</button>
+                        </div>
+                    </div>
+                </form>
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="input-group" style="box-shadow: 0px 0px 8px black;">
+                        <input type="text" id="search_string" class="form-control" style="background-color: #121b37; border: 1px solid #eea236; color: whitesmoke;" placeholder="Szukaj gry..." />
+                        <div class="input-group-btn" >
+                            <button class="btn btn-default search-game"  style="background-color: #121b37;border: 1px solid #eea236;  color: #eea236;" type="submit">
+                                <i class="glyphicon glyphicon-search" ></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+</div>

@@ -1,0 +1,23 @@
+
+<div th:fragment="categoryMenu" class="single category" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="row">
+        <div class="col-md-8" style="float: left;">
+            <h3 class="side-title">Kategorie</h3>
+        </div>
+        <div class="col-md-4">
+            <div th:if="${device != 'computer'}" th:remove="tag">
+                <button type="button" id="categoriesButton" data-toggle="collapse" data-target="#categoryMenu" style="background-color: #121b37;" title="Rozwiń kategorie" class="btn btn-warning pull-right">
+                    <span id="arrowDown" style="color: white" class="glyphicon glyphicon-chevron-down pull-right"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <ul class="list-unstyled">
+        <div id="categoryMenu" th:class="${device == 'computer'} ? 'collapse in' : 'collapse'">
+            <li><a href="/" title="Strona główna"> Strona główna </a></li>
+            <li th:each="category : ${categories}">
+                <a th:href="@{/gry/} + ${category.categorySlogan}" th:title="'Gry ' + ${category.categoryName}" ><span th:text="${category.categoryName}" th:remove="tag"></span> <span class="pull-right" th:text="${category.gamesSize}">size</span></a>
+            </li>
+        </div>
+    </ul>
+</div>
